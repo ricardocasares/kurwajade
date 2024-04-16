@@ -1,0 +1,12 @@
+semi: false
+singleQuote: true
+trailingComma: all
+bracketSpacing: false
+bracketSameLine: true
+quoteProps: consistent
+jsxSingleQuote: true
+importOrderSeparation: true
+importOrder: ['^[./]', '^@/(.*)$']
+plugins:
+  - prettier-plugin-tailwindcss
+  - '@trivago/prettier-plugin-sort-imports'
