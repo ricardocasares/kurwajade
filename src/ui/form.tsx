@@ -1,10 +1,11 @@
 'use client'
 
-import {useGeolocation, useVisibilityChange} from '@uidotdev/usehooks'
+import {useGeolocation} from '@uidotdev/usehooks'
 import ms from 'ms'
 import {useRouter} from 'next/navigation'
-import {ReactNode, useEffect} from 'react'
-import {useFormState} from 'react-dom'
+import {ButtonHTMLAttributes, ReactNode} from 'react'
+import {useFormState, useFormStatus} from 'react-dom'
+import {P, match} from 'ts-pattern'
 
 import {find_near_stops} from '@/lib/actions'
 import type {StopPassage} from '@/lib/api'
@@ -13,20 +14,45 @@ export type Form = {
   to: ReactNode
 }
 
+const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const status = useFormStatus()
+
+  return (
+    <button
+      className='btn btn-neutral'
+      {...props}
+      disabled={status.pending || props.disabled}>
+      {props.children}
+    </button>
+  )
+}
+
+const NotAsked = () => (
+  <div className='flex items-center justify-center h-96'>
+    Select your destination!
+  </div>
+)
+
+const NoResults = () => (
+  <div className='flex items-center justify-center h-96'>No results :(</div>
+)
+
 export function Form(props: Form) {
   const router = useRouter()
-  const focus = useVisibilityChange()
   const geo = useGeolocation()
   const [state, action] = useFormState(find_near_stops, null)
   const loading = geo.loading ? (
     <span className='loading loading-infinity loading-md'></span>
   ) : (
-    'Submit'
+    'Search'
   )
 
-  useEffect(() => {
-    router.refresh()
-  }, [focus, router])
+  const result = match(state)
+    .returnType<ReactNode>()
+    .with(null, () => <NotAsked />)
+    .with(P.array(P.nullish), () => <NoResults />)
+    .with(P.array(P.not(P.nullish)), (state) => <Passages passages={state} />)
+    .exhaustive()
 
   return (
     <div>
@@ -44,12 +70,13 @@ export function Form(props: Form) {
           defaultValue={geo.longitude ?? '50.063537290857916'}
           className='input input-bordered'
         />
-        <button className='btn btn-neutral' disabled={geo.loading}>
-          {loading}
-        </button>
+        <Button disabled={geo.loading}>{loading}</Button>
+        {state && state.length > 0 && (
+          <Button onClick={() => router.refresh()}>Refresh</Button>
+        )}
       </form>
       <hr className='border-neutral' />
-      {state && <Passages passages={state} />}
+      {result}
     </div>
   )
 }
