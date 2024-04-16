@@ -1,15 +1,16 @@
 'use server'
 
-import {get_stop, get_trip, nearby_stops} from '@/lib/api'
+import {Transport} from '@/lib/api'
 
 export async function find_near_stops(_: any, form: FormData) {
   const stop = form.get('stop')
   const [lat, lng] = form.getAll('coordinates')
+  const api = new Transport('http://91.223.13.70')
   const [target, geo_stops] = await Promise.all([
-    get_stop(stop!.toString()),
-    nearby_stops(lat.toString(), lng.toString()),
+    api.stop(stop!.toString()),
+    api.near(lat.toString(), lng.toString()),
   ])
-  const near_stops = await Promise.all(geo_stops.map((s) => get_stop(s.id)))
+  const near_stops = await Promise.all(geo_stops.map((s) => api.stop(s.id)))
   const common_routes = target.routes
     .filter((r) =>
       near_stops
@@ -23,7 +24,7 @@ export async function find_near_stops(_: any, form: FormData) {
   const trips = await Promise.all(
     target.actual
       .filter((a) => common_routes.includes(a.routeId))
-      .map((a) => get_trip(a.tripId)),
+      .map((a) => api.trip(a.tripId)),
   )
 
   const trips_to_target = trips

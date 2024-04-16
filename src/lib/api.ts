@@ -25,11 +25,6 @@ export type RouteDetail = {
   shortName: string
 }
 
-export type RouteStops = {
-  route: RouteDetail
-  stops: RouteStop[]
-}
-
 export type NearbyStop = {
   id: string
   type: 'stop'
@@ -56,8 +51,6 @@ export type StopPassage = {
   stopShortName: string
 }
 
-export type GroupedStopPassage = Passage & Pick<StopPassage, 'stopName'>
-
 export type TripStops = {
   actualTime: string
   status: 'PLANNED' | 'DEPARTED' | 'PREDICTED'
@@ -77,67 +70,67 @@ export type Trip = {
   routeName: string
 }
 
-export async function route_stops(routeId: string) {
-  const now = Date.now()
-  const res = await fetch(
-    `http://www.ttss.krakow.pl/internetservice/services/routeInfo/routeStops?routeId=${routeId}&cacheBuster=${now}`,
-  )
-
-  const data = (await res.json()) as RouteStops
-
-  return data
+export type Box = {top: string; left: string; right: string; bottom: string}
+const DEFAULT_BOX: Box = {
+  top: '324000000',
+  left: '-648000000',
+  bottom: '-324000000',
+  right: '648000000',
 }
 
-export async function nearby_stops(lat: string, lng: string) {
-  const res = await fetch(
-    `http://www.ttss.krakow.pl/internetservice/services/lookup/autocomplete/nearStops/json?lat=${lat}&lon=${lng}`,
-  )
+export class Transport {
+  constructor(private base: string) {}
 
-  if (!res.ok) return []
+  async near(lat: string, lon: string) {
+    const data = await this.fetch<NearbyStop[]>(
+      '/internetservice/services/lookup/autocomplete/nearStops/json',
+      {lat, lon},
+    )
 
-  const stops = (await res.json().catch(() => [])) as NearbyStop[]
+    return data.filter((s) => s.type === 'stop')
+  }
 
-  return stops.filter((stop) => stop.type === 'stop').slice(0, 10)
-}
+  async stop(id: string) {
+    return this.fetch<StopPassage>(
+      `/internetservice/services/passageInfo/stopPassages/stop`,
+      {stop: id},
+    )
+  }
 
-export async function get_stop(stop: string) {
-  const now = Date.now()
-  const res = await fetch(
-    `http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?stop=${stop}&cacheBuster=${now}`,
-  )
+  async trip(id: string) {
+    const data = await this.fetch<Trip>(
+      '/internetservice/services/tripInfo/tripPassages',
+      {
+        tripId: id,
+      },
+    )
 
-  return (await res.json()) as StopPassage
-}
+    return {...data, id}
+  }
 
-export async function get_trip(id: string) {
-  const res = await fetch(
-    `http://www.ttss.krakow.pl/internetservice/services/tripInfo/tripPassages?tripId=${id}`,
-  )
+  async stops(box: Box = DEFAULT_BOX) {
+    const data = await this.fetch<BoxStops>(
+      '/internetservice/geoserviceDispatcher/services/stopinfo/stops',
+      box,
+    )
 
-  const data = (await res.json()) as Trip
+    return data.stops.sort((a, b) =>
+      a.name.localeCompare(b.name, 'en', {numeric: true}),
+    )
+  }
 
-  return {...data, id}
-}
+  private async fetch<T>(path: string, query: Record<string, string> = {}) {
+    const now = Date.now()
+    const url = new URL(path, this.base)
 
-export async function get_stops() {
-  const [left, bottom, right, top] = [
-    -648000000, -324000000, 648000000, 324000000,
-  ].map(String)
+    Object.entries(query).forEach(([k, v]) => url.searchParams.append(k, v))
 
-  const url = new URL(
-    `http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops`,
-  )
-  const params = new URLSearchParams({
-    top,
-    left,
-    right,
-    bottom,
-  })
+    url.searchParams.append('cacheBuster', now.toString())
 
-  params.forEach((value, key) => url.searchParams.set(key, value))
+    console.log(url.href)
 
-  const res = await fetch(url)
-  const data = (await res.json()) as BoxStops
+    const res = await fetch(url)
 
-  return data.stops.sort((a, b) => a.name.localeCompare(b.name))
+    return res.json() as T
+  }
 }

@@ -15,8 +15,8 @@ const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 
   return (
     <button
-      className='btn btn-neutral'
       {...props}
+      className={`btn btn-neutral ${props.className}`}
       disabled={status.pending || props.disabled}>
       {props.children}
     </button>
@@ -25,7 +25,9 @@ const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 
 type Select = SelectHTMLAttributes<HTMLSelectElement> & {stops: Stop[]}
 const Select = ({stops, ...props}: Select) => (
-  <select className='select select-bordered w-full' {...props}>
+  <select
+    {...props}
+    className={`select select-bordered w-full ${props.className}`}>
     <optgroup label='Select line'>
       {stops.map((stop) => (
         <option key={stop.id} value={stop.shortName}>
@@ -78,10 +80,17 @@ export function Form(props: Form) {
           defaultValue={geo.longitude ?? '50.063537290857916'}
           className='input input-bordered'
         />
-        <Button disabled={geo.loading}>{loading}</Button>
-        {state && state.length > 0 && (
-          <Button onClick={() => router.refresh()}>Refresh</Button>
-        )}
+        <div className='flex gap-2'>
+          <Button disabled={geo.loading} className='grow'>
+            {loading}
+          </Button>
+          <Button
+            disabled={!state}
+            onClick={() => router.refresh()}
+            className='grow'>
+            Refresh
+          </Button>
+        </div>
       </form>
       <hr className='border-neutral' />
       {result}

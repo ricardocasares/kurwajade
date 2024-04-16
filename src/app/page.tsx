@@ -1,6 +1,9 @@
-import {get_stops} from '@/lib/api'
+import {Transport} from '@/lib/api'
 import {Form} from '@/ui/form'
 
 export default async function Home() {
-  return <Form stops={await get_stops()} />
+  const api = new Transport('http://91.223.13.70')
+  const stops = await api.stops()
+
+  return <Form stops={stops} />
 }
