@@ -2,12 +2,6 @@
 
 import {get_stop, get_trip, nearby_stops} from '@/lib/api'
 
-/*
-1. Buscar la parada de destino solicitada
-2. Buscar los trips que llegan a destino
-3. Buscar paradas cerca mio que contengan alguno de esos trips
-4. Buscar los trips en esas paradas que incluyan el destino
-*/
 export async function find_near_stops(_: any, form: FormData) {
   const stop = form.get('stop')
   const [lat, lng] = form.getAll('coordinates')

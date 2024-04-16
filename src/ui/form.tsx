@@ -3,16 +3,12 @@
 import {useGeolocation} from '@uidotdev/usehooks'
 import ms from 'ms'
 import {useRouter} from 'next/navigation'
-import {ButtonHTMLAttributes, ReactNode} from 'react'
+import type {ButtonHTMLAttributes, ReactNode, SelectHTMLAttributes} from 'react'
 import {useFormState, useFormStatus} from 'react-dom'
 import {P, match} from 'ts-pattern'
 
 import {find_near_stops} from '@/lib/actions'
-import type {StopPassage} from '@/lib/api'
-
-export type Form = {
-  to: ReactNode
-}
+import type {Stop, StopPassage} from '@/lib/api'
 
 const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const status = useFormStatus()
@@ -27,6 +23,19 @@ const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   )
 }
 
+type Select = SelectHTMLAttributes<HTMLSelectElement> & {stops: Stop[]}
+const Select = ({stops, ...props}: Select) => (
+  <select className='select select-bordered w-full' {...props}>
+    <optgroup label='Select line'>
+      {stops.map((stop) => (
+        <option key={stop.id} value={stop.shortName}>
+          {stop.name}
+        </option>
+      ))}
+    </optgroup>
+  </select>
+)
+
 const NotAsked = () => (
   <div className='flex items-center justify-center h-96'>
     Select your destination!
@@ -37,15 +46,14 @@ const NoResults = () => (
   <div className='flex items-center justify-center h-96'>No results :(</div>
 )
 
+export type Form = {
+  stops: Stop[]
+}
 export function Form(props: Form) {
   const router = useRouter()
   const geo = useGeolocation()
   const [state, action] = useFormState(find_near_stops, null)
-  const loading = geo.loading ? (
-    <span className='loading loading-infinity loading-md'></span>
-  ) : (
-    'Search'
-  )
+  const loading = geo.loading ? 'Acquiring GPS...' : 'Search'
 
   const result = match(state)
     .returnType<ReactNode>()
@@ -57,7 +65,7 @@ export function Form(props: Form) {
   return (
     <div>
       <form action={action} className='flex flex-col gap-2 p-2'>
-        {props.to}
+        <Select name='stop' stops={props.stops} />
         <input
           type='hidden'
           name='coordinates'

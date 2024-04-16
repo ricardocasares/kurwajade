@@ -1,7 +1,3 @@
-import ms from 'ms'
-
-import {merge_maps} from '@/lib/fn'
-
 export type Stop = {
   category: 'tram' | 'bus'
   id: string
@@ -144,21 +140,4 @@ export async function get_stops() {
   const data = (await res.json()) as BoxStops
 
   return data.stops.sort((a, b) => a.name.localeCompare(b.name))
-}
-
-export function group_by_departure(stop: StopPassage[]) {
-  return stop
-    .map((s) =>
-      s.actual.reduce(
-        (acc, a) =>
-          acc.set(
-            ms(a.actualRelativeTime * 1000),
-            (acc.get(`${a.actualRelativeTime * 1000}`) || []).concat([
-              {...a, stopName: s.stopName},
-            ]),
-          ),
-        new Map<string, GroupedStopPassage[]>(),
-      ),
-    )
-    .reduce(merge_maps, new Map())
 }
