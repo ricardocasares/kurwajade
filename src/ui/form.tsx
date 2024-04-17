@@ -1,14 +1,23 @@
 'use client'
 
-import {useGeolocation} from '@uidotdev/usehooks'
+import {useDebounce, useGeolocation} from '@uidotdev/usehooks'
+import cc from 'classcat'
 import ms from 'ms'
 import {useRouter} from 'next/navigation'
-import type {ButtonHTMLAttributes, ReactNode, SelectHTMLAttributes} from 'react'
+import {
+  useEffect,
+  useState,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+} from 'react'
 import {useFormState, useFormStatus} from 'react-dom'
 import {P, match} from 'ts-pattern'
 
-import {find_near_stops} from '@/lib/actions'
-import type {Stop, StopPassage} from '@/lib/api'
+import {Bus} from '@/icons/bus'
+import {Tram} from '@/icons/tram'
+import {autocomplete, find_near_stops} from '@/lib/actions'
+import type {NearbyStop, Stop, StopPassage} from '@/lib/api'
 
 const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const status = useFormStatus()
@@ -48,14 +57,20 @@ const NoResults = () => (
   <div className='flex items-center justify-center h-96'>No results :(</div>
 )
 
-export type Form = {
-  stops: Stop[]
-}
-export function Form(props: Form) {
+export function Form() {
   const router = useRouter()
   const geo = useGeolocation()
+  const [bus, setBus] = useState(false)
+  const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 500)
+  const [stop, setStop] = useState<null | NearbyStop>(null)
+  const [stops, setStops] = useState<NearbyStop[]>([])
   const [state, action] = useFormState(find_near_stops, null)
   const loading = geo.loading ? 'Acquiring GPS...' : 'Search'
+
+  useEffect(() => {
+    !!debouncedQuery && autocomplete(bus, debouncedQuery).then(setStops)
+  }, [bus, debouncedQuery])
 
   const result = match(state)
     .returnType<ReactNode>()
@@ -67,7 +82,48 @@ export function Form(props: Form) {
   return (
     <div>
       <form action={action} className='flex flex-col gap-2 p-2'>
-        <Select name='stop' stops={props.stops} />
+        <div className='flex gap-2 items-center'>
+          <div
+            className={cc([
+              {
+                'dropdown': stops.length > 0,
+                'dropdown-open': !stop && stops.length > 0,
+              },
+              'dropdown w-full grow',
+            ])}>
+            <input
+              type='text'
+              className='input input-bordered w-full'
+              placeholder={`Search for a ${bus ? 'bus' : 'tram'} stop`}
+              value={query}
+              onChange={async (e) => {
+                setStop(null)
+                setQuery(e.target.value)
+              }}
+            />
+            <div
+              tabIndex={0}
+              className='dropdown-content z-10 w-full bg-neutral drop-shadow-xl'>
+              {!stop && query && stops.length > 0 && (
+                <ul className='menu menu-compact'>
+                  {stops.map((s) => (
+                    <li key={s.id}>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          setStop(s)
+                          setQuery(s.name)
+                        }}>
+                        {s.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+        <input type='hidden' name='stop' defaultValue={stop?.id} />
         <input
           type='hidden'
           name='coordinates'
@@ -81,7 +137,7 @@ export function Form(props: Form) {
           className='input input-bordered'
         />
         <div className='flex gap-2'>
-          <Button disabled={geo.loading} className='grow'>
+          <Button disabled={geo.loading || !stop?.id} className='grow'>
             {loading}
           </Button>
           <Button
@@ -90,6 +146,24 @@ export function Form(props: Form) {
             className='grow'>
             Refresh
           </Button>
+          <label className='swap btn btn-neutral'>
+            <input
+              type='checkbox'
+              name='bus'
+              defaultChecked={bus}
+              onChange={() => {
+                setBus(!bus)
+                setStop(null)
+                setQuery('')
+              }}
+            />
+            <div className='swap-on'>
+              <Bus className='w-8 h-8' />
+            </div>
+            <div className='swap-off'>
+              <Tram className='w-8 h-8' />
+            </div>
+          </label>
         </div>
       </form>
       <hr className='border-neutral' />

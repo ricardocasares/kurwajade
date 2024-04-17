@@ -81,6 +81,15 @@ const DEFAULT_BOX: Box = {
 export class Transport {
   constructor(private base: string) {}
 
+  async query(query: string) {
+    const data = await this.fetch<NearbyStop[]>(
+      '/internetservice/services/lookup/autocomplete/json',
+      {query},
+    )
+
+    return data.filter((s) => s.type === 'stop')
+  }
+
   async near(lat: string, lon: string) {
     const data = await this.fetch<NearbyStop[]>(
       '/internetservice/services/lookup/autocomplete/nearStops/json',
@@ -126,8 +135,6 @@ export class Transport {
     Object.entries(query).forEach(([k, v]) => url.searchParams.append(k, v))
 
     url.searchParams.append('cacheBuster', now.toString())
-
-    console.log(url.href)
 
     const res = await fetch(url)
 

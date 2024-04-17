@@ -6,7 +6,7 @@ const config: Config = {
   plugins: [daisyui],
   daisyui: {
     darkTheme: 'synthwave',
-    themes: ['light', 'synthwave'],
+    themes: ['cupcake', 'synthwave'],
   },
   theme: {
     extend: {

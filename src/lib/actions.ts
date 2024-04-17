@@ -1,11 +1,18 @@
 'use server'
 
 import {Transport} from '@/lib/api'
+import {selectApiUrl} from '@/lib/fn'
+
+export async function autocomplete(bus: boolean, query: string) {
+  return new Transport(selectApiUrl(bus)).query(query)
+}
 
 export async function find_near_stops(_: any, form: FormData) {
+  const bus = form.get('bus') ?? 'off'
   const stop = form.get('stop')
   const [lat, lng] = form.getAll('coordinates')
-  const api = new Transport('http://91.223.13.70')
+
+  const api = new Transport(selectApiUrl(bus.toString() === 'on'))
   const [target, geo_stops] = await Promise.all([
     api.stop(stop!.toString()),
     api.near(lat.toString(), lng.toString()),
