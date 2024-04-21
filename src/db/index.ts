@@ -4,6 +4,10 @@ import config from '@/db/config.json'
 import {DayNumber, DAY_NAMES, Calendar, Stop, Connection} from '@/lib/types'
 import {RouteQuery} from '@/lib/validation'
 
+if (process.env.VERCEL) {
+  config.sqlitePath = './gtfs.sqlite'
+}
+
 export function connections(query: RouteQuery) {
   const db = openDb(config)
   const near = getStops({stop_lat: query.lat, stop_lon: query.lon}, [], [], {
