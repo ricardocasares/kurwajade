@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo --experimental-https",
-    "build": "run-s gtfs build:next",
+    "build": "run-p gtfs build:next",
     "build:next": "next build",
     "gtfs": "gtfs-import --configPath ./src/db/config.json",
     "start": "next start",

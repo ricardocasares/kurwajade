@@ -13,5 +13,5 @@
   "downloadTimeout": 5000,
   "ignoreDuplicates": true,
   "ignoreErrors": false,
-  "sqlitePath": "./src/db/gtfs.sqlite"
+  "sqlitePath": "./public/gtfs.sqlite"
 }
