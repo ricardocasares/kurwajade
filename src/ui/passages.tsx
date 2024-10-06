@@ -24,7 +24,7 @@ export function Passages({icon, passages}: Passages) {
     !direction ? true : p.direction === direction,
   )
 
-  useInterval(() => router.refresh(), 600000)
+  useInterval(() => router.refresh(), 5000)
 
   console.log({direction, filtered})
 
