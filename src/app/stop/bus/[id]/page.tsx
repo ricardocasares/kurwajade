@@ -26,8 +26,10 @@ export default async function Page(props: PageProps) {
               <div className='flex items-center justify-center text-3xl tabular-nums font-mono p-3 bg-accent-content text-accent rounded'>
                 {p.patternText}
               </div>
-              <div className='max-w-64 grow text-ellipsis whitespace-nowrap'>
-                <h2>{p.direction}</h2>
+              <div className='grow'>
+                <h2 className='w-32 sm:w-48 md:w-64 lg:w-full text-ellipsis whitespace-nowrap overflow-hidden'>
+                  {p.direction}
+                </h2>
                 <h3>{p.plannedTime}</h3>
               </div>
               <div className='p-3 text-xl font-bold text-success'>
