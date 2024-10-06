@@ -48,7 +48,7 @@ export function Search() {
         </summary>
         <div
           ref={ref}
-          className='dropdown-content w-full max-h-64 overflow-scroll rounded-lg shadow-xl'
+          className='dropdown-content w-full max-h-64 overflow-scroll rounded-lg shadow-xl mt-2'
           onClick={() => {}}>
           <ul className='menu bg-accent text-accent-content z-[1] flex flex-col'>
             {state.stops.map((stop) => (
@@ -57,8 +57,10 @@ export function Search() {
                   href={`/stop/${stop.category}/${stop.shortName}`}
                   className='flex flex-row items-center text-lg'>
                   {getIcon(stop)}
-                  <div className='grow text-ellipsis max-w-60 overflow-hidden whitespace-nowrap'>
-                    {stop.name}
+                  <div className='grow'>
+                    <h2 className='text-ellipsis max-w-60 overflow-hidden whitespace-nowrap'>
+                      {stop.name}
+                    </h2>
                   </div>
                   <div className='badge capitalize'>{stop.category}</div>
                 </Link>
