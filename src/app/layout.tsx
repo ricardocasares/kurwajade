@@ -24,8 +24,8 @@ export default function RootLayout({
           content='width=device-width,initial-scale=1,maximum-scale=1'
         />
       </head>
-      <body className={`antialiased ${inter.className}`}>
-        <div className='flex flex-col gap-3 p-2'>
+      <body className={`antialiased ${inter.className} flex flex-col`}>
+        <div className='p-2'>
           <Search />
         </div>
         {children}
