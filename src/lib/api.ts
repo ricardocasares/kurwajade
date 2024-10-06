@@ -61,7 +61,7 @@ export async function getPassages(
 ): Promise<StopPassages> {
   const url = new URL(PASSAGES, base)
   url.searchParams.append('stop', stop)
-  const res = await fetch(url, {next: {revalidate: 5}})
+  const res = await fetch(url, {cache: 'no-store'})
 
   return res.json()
 }
