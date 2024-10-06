@@ -23,7 +23,7 @@ export default async function Page(props: PageProps) {
         {passages.actual.map((p) => (
           <li key={p.vehicleId}>
             <div className='flex items-center gap-2 rounded p-2 shadow-md bg-base-300'>
-              <div className='flex items-center justify-center text-3xl tabular-nums font-mono p-3 bg-accent-content text-accent rounded'>
+              <div className='flex items-center justify-center text-xl tabular-nums font-bold p-3 border bg-neutral rounded'>
                 {p.patternText}
               </div>
               <div className='grow'>
