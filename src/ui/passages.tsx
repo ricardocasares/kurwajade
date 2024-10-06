@@ -1,6 +1,10 @@
+'use client'
+
 import cn from 'classcat'
 import ms from 'ms'
+import {useRouter} from 'next/navigation'
 import {ReactElement} from 'react'
+import {useInterval} from 'usehooks-ts'
 
 import {StopPassages} from '@/lib/api'
 
@@ -10,6 +14,10 @@ type Passages = {
 }
 
 export function Passages({icon, passages}: Passages) {
+  const router = useRouter()
+
+  useInterval(() => router.refresh(), 5000)
+
   return (
     <div className='p-2'>
       <div className='p-2 bg-base-200 rounded border border-neutral'>
