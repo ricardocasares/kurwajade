@@ -49,8 +49,7 @@ export function Search() {
         </summary>
         <div
           ref={ref}
-          className='dropdown-content w-full max-h-64 overflow-y-scroll overflow-x-hidden rounded-lg shadow-xl mt-2'
-          onClick={() => {}}>
+          className='dropdown-content w-full max-h-64 overflow-y-scroll overflow-x-hidden rounded-lg shadow-xl mt-2'>
           <ul className='menu bg-accent text-accent-content z-[1] flex flex-col'>
             {state.stops.map((stop) => (
               <li
@@ -67,7 +66,7 @@ export function Search() {
                         {stop.name}
                       </h2>
                     </div>
-                    <div className='font-mono badge badge-sm bg-accent-content text-accent'>
+                    <div className='font-mono font-bold badge badge-sm bg-accent-content text-accent'>
                       {stop.category}
                     </div>
                   </div>

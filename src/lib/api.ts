@@ -85,7 +85,7 @@ export async function autocompleteAction(
   const {stops: trams} = await getStops(new URL(STOPS, cfg.TRAM_URL))
   const stops = [...bus, ...trams]
     .filter(({name}) => name.toLowerCase().includes(query?.toLowerCase()))
-    .sort((a, b) => a.name.length - b.name.length)
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return {query, stops}
 }

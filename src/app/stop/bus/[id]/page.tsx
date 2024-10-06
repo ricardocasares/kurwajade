@@ -14,7 +14,7 @@ export default async function Page(props: PageProps) {
 
   return (
     <Passages
-      icon={<Bus className='text-accent-content' />}
+      icon={<Bus className='text-neutral-content w-6 h-6' />}
       passages={passages}
     />
   )
