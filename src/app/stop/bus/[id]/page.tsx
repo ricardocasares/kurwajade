@@ -22,12 +22,12 @@ export default async function Page(props: PageProps) {
       <ul className='space-y-2'>
         {passages.actual.map((p) => (
           <li key={p.vehicleId}>
-            <div className='flex items-center gap-2 rounded p-2 shadow-md bg-base-300'>
-              <div className='flex items-center justify-center text-xl tabular-nums font-bold p-3 border bg-neutral rounded'>
+            <div className='flex items-center gap-2 rounded p-2 bg-base-300 border border-neutral'>
+              <div className='flex items-center justify-center text-xl tabular-nums font-bold p-3 bg-accent text-accent-content rounded'>
                 {p.patternText}
               </div>
               <div className='grow'>
-                <h2 className='w-32 sm:w-48 md:w-64 lg:w-full text-ellipsis whitespace-nowrap overflow-hidden'>
+                <h2 className='w-48 sm:w-96 md:w-full text-ellipsis whitespace-nowrap overflow-hidden'>
                   {p.direction}
                 </h2>
                 <h3>{p.plannedTime}</h3>

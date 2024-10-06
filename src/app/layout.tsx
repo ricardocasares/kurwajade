@@ -22,12 +22,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div className='h-screen bg-base-200'>
-          <div className='flex flex-col gap-3 p-2'>
-            <Search />
-          </div>
-          {children}
+        <div className='flex flex-col gap-3 p-2'>
+          <Search />
         </div>
+        {children}
       </body>
     </html>
   )
