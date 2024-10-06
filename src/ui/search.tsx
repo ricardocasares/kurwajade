@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import {useEffect, useRef, useState} from 'react'
 import {useFormState} from 'react-dom'
+import {match} from 'ts-pattern'
 import {useOnClickOutside} from 'usehooks-ts'
 
 import {Bus} from '@/icons/bus'
@@ -48,21 +49,28 @@ export function Search() {
         </summary>
         <div
           ref={ref}
-          className='dropdown-content w-full max-h-64 overflow-scroll rounded-lg shadow-xl mt-2'
+          className='dropdown-content w-full max-h-64 overflow-y-scroll overflow-x-hidden rounded-lg shadow-xl mt-2'
           onClick={() => {}}>
           <ul className='menu bg-accent text-accent-content z-[1] flex flex-col'>
             {state.stops.map((stop) => (
-              <li key={stop.id} onClick={() => setOpen(!open)}>
+              <li
+                key={stop.id}
+                onClick={() => setOpen(!open)}
+                className='w-full'>
                 <Link
                   href={`/stop/${stop.category}/${stop.shortName}`}
-                  className='flex flex-row items-center text-lg'>
-                  {getIcon(stop)}
-                  <div className='grow'>
-                    <h2 className='text-ellipsis max-w-60 overflow-hidden whitespace-nowrap'>
-                      {stop.name}
-                    </h2>
+                  className='block'>
+                  <div className='flex flex-row gap-2 items-center w-full'>
+                    <VehicleIcon type={stop.category} />
+                    <div className='grow'>
+                      <h2 className='text-ellipsis max-w-60 overflow-hidden whitespace-nowrap'>
+                        {stop.name}
+                      </h2>
+                    </div>
+                    <div className='font-mono badge badge-sm bg-accent-content text-accent'>
+                      {stop.category}
+                    </div>
                   </div>
-                  <div className='badge capitalize'>{stop.category}</div>
                 </Link>
               </li>
             ))}
@@ -73,13 +81,10 @@ export function Search() {
   )
 }
 
-function getIcon(stop: Stop) {
-  switch (stop.category) {
-    case 'bus':
-      return <Bus />
-    case 'tram':
-      return <Tram />
-    case 'other':
-      return <Other />
-  }
+function VehicleIcon({type}: {type: Stop['category']}) {
+  return match(type)
+    .with('bus', () => <Bus />)
+    .with('tram', () => <Tram />)
+    .with('other', () => <Other />)
+    .exhaustive()
 }

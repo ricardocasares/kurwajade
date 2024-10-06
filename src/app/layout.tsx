@@ -1,7 +1,10 @@
 import type {Metadata} from 'next'
+import {Inter} from 'next/font/google'
 
 import '@/app/globals.css'
 import {Search} from '@/ui/search'
+
+const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,7 +24,7 @@ export default function RootLayout({
           content='width=device-width,initial-scale=1,maximum-scale=1'
         />
       </head>
-      <body>
+      <body className={`antialiased ${inter.className}`}>
         <div className='flex flex-col gap-3 p-2'>
           <Search />
         </div>

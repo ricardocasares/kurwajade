@@ -37,7 +37,7 @@ export type Passage = {
   mixedTime: string
   plannedTime: string
   patternText: string
-  status: 'PREDICTED' | 'PLANNED' | 'DELAYED'
+  status: 'PREDICTED' | 'PLANNED' | 'DELAYED' | 'DEPARTED' | 'STOPPING'
 }
 export type Route = {
   alerts: string[]
