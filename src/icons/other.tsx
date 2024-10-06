@@ -1,6 +1,6 @@
 import {SVGProps} from 'react'
 
-export function Ticket(props: SVGProps<SVGSVGElement>) {
+export function Other(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -14,7 +14,7 @@ export function Ticket(props: SVGProps<SVGSVGElement>) {
         strokeLinecap='round'
         strokeLinejoin='round'
         strokeWidth='2'
-        d='M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Zm11-4v2m0 10v2m0-8v2'></path>
+        d='M12 13v8m0-18v3m6 0a2 2 0 0 1 1.387.56l2.307 2.22a1 1 0 0 1 0 1.44l-2.307 2.22A2 2 0 0 1 18 13H6a2 2 0 0 1-1.387-.56l-2.306-2.22a1 1 0 0 1 0-1.44l2.306-2.22A2 2 0 0 1 6 6z'></path>
     </svg>
   )
 }

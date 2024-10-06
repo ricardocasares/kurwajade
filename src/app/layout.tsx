@@ -1,9 +1,7 @@
 import type {Metadata} from 'next'
-import {Karla} from 'next/font/google'
 
 import '@/app/globals.css'
-
-const font = Karla({subsets: ['latin']})
+import {Search} from '@/ui/search'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -23,7 +21,14 @@ export default function RootLayout({
           content='width=device-width,initial-scale=1,maximum-scale=1'
         />
       </head>
-      <body className={font.className}>{children}</body>
+      <body>
+        <div className='h-screen bg-base-200'>
+          <div className='flex flex-col gap-3 p-2'>
+            <Search />
+          </div>
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
