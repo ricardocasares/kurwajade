@@ -1,0 +1,36 @@
+# GET ALL STOPS
+GET http://ttss.mpk.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops
+###
+# GET NEARBY STOPS
+GET http://ttss.mpk.krakow.pl/internetservice/services/lookup/autocomplete/nearStops/json
+  ?lat=50.0624559
+  &lon=19.9288791
+
+###
+# GET TRIP STOPS
+GET http://ttss.mpk.krakow.pl/internetservice/services/tripInfo/tripPassages?tripId=8095261304188970249
+
+###
+# GET ALL ROUTES
+GET http://ttss.mpk.krakow.pl/internetservice/services/routeInfo/route
+
+###
+# GET ROUTE STOPS
+GET http://ttss.mpk.krakow.pl/internetservice/services/routeInfo/routeStops
+  ?routeId=8095257447305839182
+
+###
+# GET STOP INFO
+GET http://ttss.mpk.krakow.pl/internetservice/services/stopInfo/stop
+  ?stop=77
+
+###
+# GET STOP PASSAGES
+GET http://ttss.mpk.krakow.pl/internetservice/services/passageInfo/stopPassages/stop
+  ?stop=77
+  &mode=departure
+
+###
+# AUTOCOMPLETE STOPS
+GET http://ttss.mpk.krakow.pl/internetservice/services/lookup/autocomplete/json
+  ?query=bag

@@ -25,7 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased ${inter.className} flex flex-col`}>
-        <div className='p-2'>
+        <div className='p-2 pb-0'>
           <Search />
         </div>
         {children}

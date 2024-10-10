@@ -37,7 +37,7 @@ export type Passage = {
   mixedTime: string
   plannedTime: string
   patternText: string
-  status: 'PREDICTED' | 'PLANNED' | 'DELAYED' | 'DEPARTED' | 'STOPPING'
+  status: 'PREDICTED' | 'PLANNED' | 'DEPARTED' | 'STOPPING'
 }
 export type Route = {
   alerts: string[]
@@ -80,7 +80,7 @@ export async function autocompleteAction(
 ): Promise<AutoCompleteState> {
   const query = form.get('query')!.toString()
   const url = new URL(STOPS, cfg.BUS_URL)
-  console.log(url.href)
+
   const {stops: bus} = await getStops(url)
   const {stops: trams} = await getStops(new URL(STOPS, cfg.TRAM_URL))
   const stops = [...bus, ...trams]
