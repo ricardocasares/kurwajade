@@ -35,6 +35,7 @@ export default async function Page() {
         .with([], () => <Empty />)
         .with(P.array({stopName: P.string}), (p) =>
           p.map((p) => (
+            // @ts-ignore
             <Passages key={p.stopShortName} kind={p.kind} passages={p} />
           )),
         )
